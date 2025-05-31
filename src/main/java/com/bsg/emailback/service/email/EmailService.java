@@ -1,10 +1,16 @@
 package com.bsg.emailback.service.email;
 
 import com.bsg.emailback.dto.EmailRequestDTO;
+import com.bsg.emailback.exceptions.EmailSerializationException;
 import com.bsg.emailback.validator.EmailValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class EmailService<T> {
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     @Autowired
     protected EmailValidator emailValidator;
@@ -21,7 +27,10 @@ public abstract class EmailService<T> {
     }
 
     protected String serializeToJson(T providerDto) {
-        // TODO: implementar
-        return "";
+        try {
+            return objectMapper.writeValueAsString(providerDto);
+        } catch (JsonProcessingException e) {
+            throw new EmailSerializationException("Erro ao serializar", e);
+        }
     }
 }
