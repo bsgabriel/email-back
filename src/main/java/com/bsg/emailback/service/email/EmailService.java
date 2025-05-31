@@ -1,8 +1,13 @@
 package com.bsg.emailback.service.email;
 
 import com.bsg.emailback.dto.EmailRequestDTO;
+import com.bsg.emailback.validator.EmailValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class EmailService<T> {
+
+    @Autowired
+    protected EmailValidator emailValidator;
 
     protected abstract T mapToProviderDto(EmailRequestDTO request);
 
@@ -10,7 +15,7 @@ public abstract class EmailService<T> {
 
     public final void serializeAsJson(EmailRequestDTO request) {
         var providerDto = mapToProviderDto(request);
-        // TODO: validar objeto mapeado
+        this.emailValidator.validate(providerDto);
 
         processSerializedEmail(serializeToJson(providerDto));
     }
