@@ -2,6 +2,7 @@ package com.bsg.emailback.service.email;
 
 import com.bsg.emailback.dto.EmailRequestDTO;
 import com.bsg.emailback.exceptions.EmailSerializationException;
+import com.bsg.emailback.service.messages.MessageSourceService;
 import com.bsg.emailback.validator.EmailValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,9 @@ public abstract class EmailService<T> {
 
     @Autowired
     protected EmailValidator emailValidator;
+
+    @Autowired
+    protected MessageSourceService messageSourceService;
 
     protected abstract T mapToProviderDto(EmailRequestDTO request);
 
@@ -30,7 +34,8 @@ public abstract class EmailService<T> {
         try {
             return objectMapper.writeValueAsString(providerDto);
         } catch (JsonProcessingException e) {
-            throw new EmailSerializationException("Erro ao serializar", e);
+            String errorMessage = messageSourceService.getMessage("mail.error.serialization");
+            throw new EmailSerializationException(errorMessage, e);
         }
     }
 }
