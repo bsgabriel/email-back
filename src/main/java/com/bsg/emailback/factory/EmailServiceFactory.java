@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class ServiceFactory {
+public class EmailServiceFactory {
 
     private final Map<String, EmailService<?>> emailServices;
 
